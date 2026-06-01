@@ -1,0 +1,32 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
+
+# Laravel
+/vendor/
+/.idea
+/.vscode
+/.phpunit.result.cache
+/storage/*.key
+/public/storage
+/storage/app/public
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/testing
+/storage/framework/views
+/storage/logs
+
+# Misc
+.claude/
+*.log
+*.sql
+*.sqlite
