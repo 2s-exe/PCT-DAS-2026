@@ -8,9 +8,9 @@ import { Spinner } from '@/components/ui'
 import { GraduationCap, BookOpen, Users, BarChart3, Eye, EyeOff } from 'lucide-react'
 
 const DEMO = [
-  { login: 'admin@uvci.edu.ci',      password: 'Admin@2025',      role: 'Administrateur',          color: '#0056A6' },
-  { login: 'secretaire@uvci.edu.ci', password: 'Secretaire@2025', role: 'Secrétaire pédagogique',  color: '#6B4ECC' },
-  { login: 'j.kouakou@uvci.ci',      password: 'Enseignant@2025', role: 'Enseignant — Kouassi J.', color: '#1D9E6F' },
+  { login: 'admin@uvci.edu.ci',      password: 'secret123',      role: 'Administrateur',          color: '#0056A6' },
+  { login: 'secretaire@uvci.edu.ci', password: 'secret123', role: 'Secrétaire pédagogique',  color: '#6B4ECC' },
+  { login: 'j.kouakou@uvci.ci',      password: 'secret123', role: 'Enseignant — Kouassi J.', color: '#1D9E6F' },
 ]
 
 const FEATURES = [

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parametres_calcul', function (Blueprint $table) {
+        Schema::create('param_calculs', function (Blueprint $table) {
             $table->id('id_parametre');
             $table->enum('type_operation', ['conception', 'mise_a_jour']);
             $table->unsignedTinyInteger('niveau');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parametres_calcul');
+        Schema::dropIfExists('param_calculs');
     }
 };

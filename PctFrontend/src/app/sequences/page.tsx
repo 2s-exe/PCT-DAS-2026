@@ -8,7 +8,16 @@ import { sequencesApi, coursApi } from '@/lib/api'
 import { Badge, Btn, Modal, SearchBar, Card, Empty, Spinner, Input, Sel, Textarea, Topbar } from '@/components/ui'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 
-type Seq = Record<string, unknown>
+type Seq = {
+  id_sequence?: number
+  titre_sequence?: string
+  ordre_sequence?: string | number
+  description?: string
+  id_cours?: number | string
+  ressources_count?: number
+  cours?: Seq
+  [key: string]: unknown
+}
 
 function ModalSequence({ seq, defaultCours, onClose }: { seq: Seq | null; defaultCours?: string; onClose: () => void }) {
   const qc = useQueryClient()
@@ -21,7 +30,7 @@ function ModalSequence({ seq, defaultCours, onClose }: { seq: Seq | null; defaul
   const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }))
 
   const { data: coursList } = useQuery({ queryKey: ['cours-list'], queryFn: () => coursApi.list().then(r => r.data.data ?? r.data) })
-  const coursOptions = (coursList || []).map((c: Seq) => ({
+  const coursOptions: { value: string; label: string }[] = (coursList || []).map((c: Seq) => ({
     value: String(c.id_cours),
     label: `${c.intitule_ecue} (${c.niveau})`,
   }))
@@ -77,7 +86,7 @@ export default function SequencesPage() {
     !search || String(s.titre_sequence).toLowerCase().includes(search.toLowerCase())
   )
 
-  const coursOptions = (coursList || []).map((c: Seq) => ({
+  const coursOptions: { value: string; label: string }[] = (coursList || []).map((c: Seq) => ({
     value: String(c.id_cours),
     label: String(c.intitule_ecue),
   }))
@@ -112,7 +121,7 @@ export default function SequencesPage() {
             <SearchBar value={search} onChange={setSearch} placeholder="Titre de la séquence..." />
             <select className="form-control" style={{ width: 'auto' }} value={filterCours} onChange={e => setFilterCours(e.target.value)}>
               <option value="">Tous les cours</option>
-              {coursOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              {coursOptions.map((o: { value: string; label: string }) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
           <Btn variant="primary" icon={Plus} onClick={() => setModal('create')}>Nouvelle séquence</Btn>

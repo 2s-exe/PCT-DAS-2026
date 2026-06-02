@@ -1,13 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/:path*`,
-      },
-    ]
-  },
+  // No rewrites - frontend will call backend directly at http://backend:8000 from container
+  // or http://localhost:8000 from browser
 }
 
 module.exports = nextConfig

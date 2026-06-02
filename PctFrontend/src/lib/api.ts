@@ -1,9 +1,18 @@
 import axios from 'axios'
 
 // ── Client Axios ──────────────────────────────────────────────────────────────
+// Determine the API URL based on environment
+const getBaseURL = () => {
+  if (typeof window !== 'undefined') {
+    // Browser: use localhost (host machine)
+    return 'http://localhost:8000/api/v1'
+  }
+  // Server: use docker service name (container-to-container)
+  return `${process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000'}/api/v1`
+}
+
 const api = axios.create({
-  // Next.js rewrite: /api/v1/* → http://localhost:8000/api/v1/*
-  baseURL: '/api/v1',
+  baseURL: getBaseURL(),
   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
 })
 

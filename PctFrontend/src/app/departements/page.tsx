@@ -8,7 +8,14 @@ import { departementsApi } from '@/lib/api'
 import { Btn, Modal, SearchBar, Card, Empty, Spinner, Input, Textarea, Topbar } from '@/components/ui'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 
-type Dept = Record<string, unknown>
+type Dept = {
+  id_departement?: number
+  nom_departement?: string
+  responsable?: string
+  description?: string
+  enseignants_count?: number
+  [key: string]: unknown
+}
 
 function ModalDept({ dept, onClose }: { dept: Dept | null; onClose: () => void }) {
   const qc = useQueryClient()

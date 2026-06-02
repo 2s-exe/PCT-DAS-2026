@@ -94,7 +94,7 @@ export default function AttributionsPage() {
     return `${ens?.nom} ${ens?.prenom} ${cours?.intitule_ecue}`.toLowerCase().includes(search.toLowerCase())
   })
 
-  const anneeOptions = (anneesList||[]).map((a:Attribution)=>({value:String(a.id_annee),label:String(a.libelle_annee)}))
+  const anneeOptions: { value: string; label: string }[] = (anneesList||[]).map((a:Attribution)=>({value:String(a.id_annee),label:String(a.libelle_annee)}))
 
   return (
     <DashboardLayout roles={['admin','secretaire']}>
@@ -112,7 +112,7 @@ export default function AttributionsPage() {
             <SearchBar value={search} onChange={setSearch} placeholder="Enseignant, cours..."/>
             <select className="form-control" style={{width:'auto'}} value={filterAnnee} onChange={e=>setFilterAnnee(e.target.value)}>
               <option value="">Toutes les années</option>
-              {anneeOptions.map(o=><option key={o.value} value={o.value}>{o.label}</option>)}
+              {anneeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </div>
           <Btn variant="primary" icon={Plus} onClick={()=>setModal('create')}>Attribuer un cours</Btn>

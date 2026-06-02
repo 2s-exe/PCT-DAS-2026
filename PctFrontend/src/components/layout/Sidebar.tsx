@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuth } from '@/store/authStore'
+import type { LucideIcon } from 'lucide-react'
 import {
   LayoutDashboard, Users, BookOpen, Activity, Clock,
   BarChart3, Settings, User, Layers, LogOut, Calculator,
@@ -13,7 +14,7 @@ import {
 interface NavItem {
   to?: string
   label?: string
-  icon?: React.ComponentType<{ size?: number }>
+  icon?: LucideIcon
   section?: string
 }
 
