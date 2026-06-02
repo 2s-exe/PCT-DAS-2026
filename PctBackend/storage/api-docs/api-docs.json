@@ -1,0 +1,1701 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Gestion Heures UVCI API",
+        "description": "Documentation de l'API de gestion des heures",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Serveur local"
+        }
+    ],
+    "paths": {
+        "/api/v1/activites": {
+            "get": {
+                "tags": [
+                    "Activités"
+                ],
+                "summary": "Liste des activités",
+                "operationId": "0cfa867fdaebb196dc2e4562ee321012",
+                "parameters": [
+                    {
+                        "name": "id_enseignant",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_annee",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des activités"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Activités"
+                ],
+                "summary": "Enregistrer une activité pédagogique",
+                "operationId": "156b46a5b8433fb9c754f8ff29dd2512",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_ressource",
+                                    "nb_seances",
+                                    "date_activite",
+                                    "id_attribution",
+                                    "id_annee"
+                                ],
+                                "properties": {
+                                    "id_ressource": {
+                                        "type": "integer"
+                                    },
+                                    "nb_seances": {
+                                        "type": "integer",
+                                        "enum": [
+                                            1,
+                                            2,
+                                            4,
+                                            6
+                                        ]
+                                    },
+                                    "date_activite": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "id_attribution": {
+                                        "type": "integer"
+                                    },
+                                    "id_annee": {
+                                        "type": "integer"
+                                    },
+                                    "observations": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Activité enregistrée avec volume horaire calculé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/annees": {
+            "get": {
+                "tags": [
+                    "Années Académiques"
+                ],
+                "summary": "Liste des années académiques",
+                "operationId": "f196627cd79cbf4440627b291f15bf73",
+                "responses": {
+                    "200": {
+                        "description": "Liste des années"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Années Académiques"
+                ],
+                "summary": "Créer une année académique",
+                "operationId": "080cd063670f4b38bcd5f2ea302d8907",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "libelle_annee",
+                                    "date_debut",
+                                    "date_fin"
+                                ],
+                                "properties": {
+                                    "libelle_annee": {
+                                        "type": "string",
+                                        "example": "2024-2025"
+                                    },
+                                    "date_debut": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-01"
+                                    },
+                                    "date_fin": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-07-31"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Année créée"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/annees/{id}": {
+            "get": {
+                "tags": [
+                    "Années Académiques"
+                ],
+                "summary": "Détail d'une année académique",
+                "operationId": "0f5a9664b010e7638e7b72e1da2ea407",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail année"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Années Académiques"
+                ],
+                "summary": "Modifier une année académique",
+                "operationId": "3ec53fd0428cbe86180e7af3b0a7765e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "libelle_annee": {
+                                        "type": "string"
+                                    },
+                                    "date_debut": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "date_fin": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Année modifiée"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Années Académiques"
+                ],
+                "summary": "Supprimer une année académique",
+                "operationId": "2f863a6d1ab141fb8acecc947a5b627c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Année supprimée"
+                    },
+                    "422": {
+                        "description": "Impossible : des données sont liées à cette année"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/annees/active": {
+            "get": {
+                "tags": [
+                    "Années Académiques"
+                ],
+                "summary": "Récupérer l'année académique active",
+                "operationId": "1b6dbbb8c0618df8fd1d14539a5f6f01",
+                "responses": {
+                    "200": {
+                        "description": "Année active"
+                    },
+                    "404": {
+                        "description": "Aucune année active"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/attributions": {
+            "get": {
+                "tags": [
+                    "Attributions"
+                ],
+                "summary": "Liste des attributions",
+                "operationId": "09455f74458a329394a971dbcbc16160",
+                "parameters": [
+                    {
+                        "name": "id_enseignant",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_annee",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des attributions"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Attributions"
+                ],
+                "summary": "Attribuer un cours à un enseignant",
+                "operationId": "bdbf20102919cb6f41adaf1a06e113bb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id_enseignant",
+                                    "id_cours",
+                                    "id_annee",
+                                    "charge_horaire",
+                                    "date_attribution"
+                                ],
+                                "properties": {
+                                    "id_enseignant": {
+                                        "type": "integer"
+                                    },
+                                    "id_cours": {
+                                        "type": "integer"
+                                    },
+                                    "id_annee": {
+                                        "type": "integer"
+                                    },
+                                    "charge_horaire": {
+                                        "type": "number",
+                                        "example": 45
+                                    },
+                                    "date_attribution": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-09-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Attribution créée"
+                    },
+                    "422": {
+                        "description": "Attribution déjà existante"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Connexion utilisateur",
+                "operationId": "bae68d1c55329ecb6e41f48285840c8f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "login",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "admin@uvci.edu.ci"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Identifiants invalides"
+                    }
+                }
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Déconnexion",
+                "operationId": "c5cdd87fdbf9d0f95dede875bd023dec",
+                "responses": {
+                    "200": {
+                        "description": "Déconnecté avec succès"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/me": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Utilisateur connecté",
+                "operationId": "13b43df400e475a157538f73617b8c3d",
+                "responses": {
+                    "200": {
+                        "description": "Données de l'utilisateur connecté"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/cours": {
+            "get": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Liste des cours",
+                "operationId": "d6c49484ccc20ce1867c367f94dd7c3a",
+                "parameters": [
+                    {
+                        "name": "niveau",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des cours"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Cours"
+                ],
+                "summary": "Créer un cours",
+                "operationId": "cd05524e774d700c4d4e40115be7170b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "intitule_ecue",
+                                    "niveau",
+                                    "semestre",
+                                    "credit_ecue",
+                                    "charge_horaire_annuel"
+                                ],
+                                "properties": {
+                                    "intitule_ecue": {
+                                        "type": "string",
+                                        "example": "Algorithmes avancés"
+                                    },
+                                    "niveau": {
+                                        "type": "string",
+                                        "enum": [
+                                            "L1",
+                                            "L2",
+                                            "L3",
+                                            "M1",
+                                            "M2"
+                                        ]
+                                    },
+                                    "semestre": {
+                                        "type": "string",
+                                        "example": "S3"
+                                    },
+                                    "credit_ecue": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "code_specialite": {
+                                        "type": "string",
+                                        "example": "INFO"
+                                    },
+                                    "charge_horaire_annuel": {
+                                        "type": "number",
+                                        "example": 45
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cours créé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/departements": {
+            "get": {
+                "tags": [
+                    "Départements"
+                ],
+                "summary": "Liste de tous les départements",
+                "operationId": "fb736a0bd46ca03123e83c6d7d0342b9",
+                "responses": {
+                    "200": {
+                        "description": "Liste des départements"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Départements"
+                ],
+                "summary": "Créer un département",
+                "operationId": "822e20de313a1b7d94c5c0d0ac904cfb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom_departement"
+                                ],
+                                "properties": {
+                                    "nom_departement": {
+                                        "type": "string",
+                                        "example": "Informatique"
+                                    },
+                                    "responsable": {
+                                        "type": "string",
+                                        "example": "Dr. Koffi"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Département créé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/departements/{id}": {
+            "get": {
+                "tags": [
+                    "Départements"
+                ],
+                "summary": "Détail d'un département avec ses enseignants",
+                "operationId": "f3c2396b4460f01dca7dafce020494ac",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail département"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Départements"
+                ],
+                "summary": "Modifier un département",
+                "operationId": "e32afea528656ac0c7b0c9f327d75443",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom_departement": {
+                                        "type": "string"
+                                    },
+                                    "responsable": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Département modifié"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Départements"
+                ],
+                "summary": "Supprimer un département",
+                "operationId": "5ad105f5d17f17eb76b4bad5d8d21aa4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Département supprimé"
+                    },
+                    "422": {
+                        "description": "Impossible : des enseignants sont rattachés à ce département"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enseignants": {
+            "get": {
+                "tags": [
+                    "Enseignants"
+                ],
+                "summary": "Liste des enseignants",
+                "operationId": "5bc8fafe95e67612762bbfac2d40e527",
+                "parameters": [
+                    {
+                        "name": "departement",
+                        "in": "query",
+                        "description": "Filtrer par département",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "statut",
+                        "in": "query",
+                        "description": "Permanent ou Vacataire",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Recherche par nom/prénom",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des enseignants"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Enseignants"
+                ],
+                "summary": "Créer un enseignant + son compte utilisateur",
+                "operationId": "3d8c642cfd0cc07860d111592ad028f5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nom",
+                                    "prenom",
+                                    "email",
+                                    "grade",
+                                    "statut",
+                                    "id_departement",
+                                    "taux_horaire"
+                                ],
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Kouassi"
+                                    },
+                                    "prenom": {
+                                        "type": "string",
+                                        "example": "Jean"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "j.kouassi@uvci.edu.ci"
+                                    },
+                                    "login": {
+                                        "type": "string",
+                                        "example": "j.kouassi@uvci.edu.ci"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Password@123"
+                                    },
+                                    "telephone": {
+                                        "type": "string",
+                                        "example": "+225 07 00 00 00"
+                                    },
+                                    "grade": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Assistant",
+                                            "Maitre-Assistant",
+                                            "Professeur"
+                                        ]
+                                    },
+                                    "statut": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Permanent",
+                                            "Vacataire"
+                                        ]
+                                    },
+                                    "taux_horaire": {
+                                        "type": "number",
+                                        "example": 5000
+                                    },
+                                    "id_departement": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Enseignant créé avec succès"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enseignants/{enseignant}": {
+            "get": {
+                "tags": [
+                    "Enseignants"
+                ],
+                "summary": "Détail d'un enseignant",
+                "operationId": "8e125a9bd4cc26fcd728fa66a7bc3d32",
+                "parameters": [
+                    {
+                        "name": "enseignant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail enseignant"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Enseignants"
+                ],
+                "summary": "Modifier un enseignant",
+                "operationId": "92cbc6deecfade9d4a63dc59ccc1fa31",
+                "parameters": [
+                    {
+                        "name": "enseignant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nom": {
+                                        "type": "string",
+                                        "example": "Kouassi"
+                                    },
+                                    "prenom": {
+                                        "type": "string",
+                                        "example": "Jean"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "j.kouassi@uvci.edu.ci"
+                                    },
+                                    "login": {
+                                        "type": "string",
+                                        "example": "j.kouassi@uvci.edu.ci"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "NewPassword@123"
+                                    },
+                                    "telephone": {
+                                        "type": "string",
+                                        "example": "+225 07 00 00 00"
+                                    },
+                                    "grade": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Assistant",
+                                            "Maitre-Assistant",
+                                            "Professeur"
+                                        ]
+                                    },
+                                    "statut": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Permanent",
+                                            "Vacataire"
+                                        ]
+                                    },
+                                    "taux_horaire": {
+                                        "type": "number",
+                                        "example": 5000
+                                    },
+                                    "id_departement": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Enseignant modifié"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Enseignants"
+                ],
+                "summary": "Désactiver un enseignant (soft delete)",
+                "operationId": "622eb0d72497ce03b0cf3de86df5561e",
+                "parameters": [
+                    {
+                        "name": "enseignant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Enseignant désactivé"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/parametres": {
+            "get": {
+                "tags": [
+                    "Paramètres de calcul"
+                ],
+                "summary": "Liste de tous les paramètres de calcul",
+                "operationId": "b6297fcef4ca042943cf2be23cef0118",
+                "responses": {
+                    "200": {
+                        "description": "Liste des paramètres"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Paramètres de calcul"
+                ],
+                "summary": "Créer un paramètre de calcul",
+                "operationId": "a4b720f2a9c920fea9516b46d4d1f9d4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type_operation",
+                                    "niveau",
+                                    "libelle_niveau",
+                                    "heures_par_seance",
+                                    "id_annee"
+                                ],
+                                "properties": {
+                                    "type_operation": {
+                                        "type": "string",
+                                        "enum": [
+                                            "conception",
+                                            "mise_a_jour"
+                                        ]
+                                    },
+                                    "niveau": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "libelle_niveau": {
+                                        "type": "string",
+                                        "example": "Simple"
+                                    },
+                                    "heures_par_seance": {
+                                        "type": "number",
+                                        "example": 1.5
+                                    },
+                                    "id_annee": {
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Taux pour conception simple"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Paramètre créé"
+                    },
+                    "422": {
+                        "description": "Ce paramètre existe déjà"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/parametres/{id}": {
+            "get": {
+                "tags": [
+                    "Paramètres de calcul"
+                ],
+                "summary": "Détail d'un paramètre",
+                "operationId": "9deeb28c7ccaf273bab5d4982d67b3e6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail paramètre"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Paramètres de calcul"
+                ],
+                "summary": "Modifier le coefficient d'un paramètre",
+                "operationId": "5cd5e245baa67c70e60843b46506f2ec",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "coefficient_vhn": {
+                                        "type": "number",
+                                        "example": 5
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Paramètre modifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Paramètres de calcul"
+                ],
+                "summary": "Supprimer un paramètre de calcul",
+                "operationId": "52bb59485ca925d46b66e4e75bc61db5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paramètre supprimé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/rapports/enseignant/{id}": {
+            "get": {
+                "tags": [
+                    "Rapports"
+                ],
+                "summary": "Fiche individuelle enseignant (PDF)",
+                "operationId": "18043aeb302acf8d3561eead1f115a4b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_annee",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PDF généré",
+                        "content": {
+                            "application/pdf": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/exports/excel": {
+            "get": {
+                "tags": [
+                    "Rapports"
+                ],
+                "summary": "Export Excel état global des heures",
+                "operationId": "ee1dc6ae03162716a8c88e80bdbf2f0c",
+                "parameters": [
+                    {
+                        "name": "id_annee",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Fichier Excel",
+                        "content": {
+                            "application/vnd.ms-excel": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/exports/pdf": {
+            "get": {
+                "tags": [
+                    "Rapports"
+                ],
+                "summary": "Export PDF état global des heures",
+                "operationId": "5d471ff914c8d956b5480041a9c3193b",
+                "parameters": [
+                    {
+                        "name": "id_annee",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PDF global",
+                        "content": {
+                            "application/pdf": {}
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users": {
+            "get": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Liste de tous les comptes",
+                "operationId": "12e989554c281d650dff75443acabf54",
+                "responses": {
+                    "200": {
+                        "description": "Liste des utilisateurs"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Créer un compte utilisateur (admin ou secrétaire)",
+                "operationId": "64da9b5a20fa4f20e947ed61b2bbb6da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "login",
+                                    "password",
+                                    "id_profil"
+                                ],
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "secretaire2@uvci.edu.ci"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "MonMotDePasse@2024"
+                                    },
+                                    "id_profil": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "id_enseignant": {
+                                        "description": "Obligatoire si le profil est 'enseignant', null sinon",
+                                        "type": "integer",
+                                        "example": null
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Compte créé"
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{id}": {
+            "get": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Détail d'un compte",
+                "operationId": "a9d321d5dc6bc2613c6cf5ba92b76c89",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail utilisateur"
+                    },
+                    "404": {
+                        "description": "Non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Modifier un compte (login, mot de passe, profil)",
+                "operationId": "5bcda8371b3cb9f863a47620e636be9b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "example": "secretaire2@uvci.edu.ci"
+                                    },
+                                    "password": {
+                                        "description": "Laisser vide pour ne pas changer",
+                                        "type": "string"
+                                    },
+                                    "id_profil": {
+                                        "type": "integer"
+                                    },
+                                    "actif": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Compte modifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Désactiver un compte",
+                "operationId": "0446b3779430bbd9ca0f106d9fd0a2ed",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Compte désactivé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/{id}/reinitialiser-mdp": {
+            "post": {
+                "tags": [
+                    "Utilisateurs"
+                ],
+                "summary": "Réinitialiser le mot de passe d'un utilisateur",
+                "operationId": "18dc54a2abb138d69a300830fc860a49",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe réinitialisé, nouveau mdp retourné"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/volumes": {
+            "get": {
+                "tags": [
+                    "Volumes Horaires"
+                ],
+                "summary": "Liste des volumes horaires",
+                "operationId": "19de5373989e9c64300a28041e1ddf42",
+                "parameters": [
+                    {
+                        "name": "id_annee",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_enseignant",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des volumes"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/volumes/{id}/valider": {
+            "post": {
+                "tags": [
+                    "Volumes Horaires"
+                ],
+                "summary": "Valider ou rejeter un volume horaire",
+                "operationId": "fa7b4b506aa872ff35a9338bbb47d28a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "statut_validation"
+                                ],
+                                "properties": {
+                                    "statut_validation": {
+                                        "type": "string",
+                                        "enum": [
+                                            "valide",
+                                            "rejete"
+                                        ]
+                                    },
+                                    "observations": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Volume validé/rejeté"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Activités",
+            "description": "Activités pédagogiques des enseignants"
+        },
+        {
+            "name": "Années Académiques",
+            "description": "Gestion des années académiques (admin uniquement)"
+        },
+        {
+            "name": "Attributions",
+            "description": "Attribution des cours aux enseignants"
+        },
+        {
+            "name": "Auth",
+            "description": "Authentification"
+        },
+        {
+            "name": "Cours",
+            "description": "Gestion des cours"
+        },
+        {
+            "name": "Départements",
+            "description": "Gestion des départements (admin uniquement)"
+        },
+        {
+            "name": "Enseignants",
+            "description": "Gestion des enseignants"
+        },
+        {
+            "name": "Paramètres de calcul",
+            "description": "Coefficients VHN par type d'opération et complexité (admin uniquement)"
+        },
+        {
+            "name": "Rapports",
+            "description": "Génération des exports PDF et Excel"
+        },
+        {
+            "name": "Utilisateurs",
+            "description": "Gestion des comptes utilisateurs (admin uniquement)"
+        },
+        {
+            "name": "Volumes Horaires",
+            "description": "Volumes horaires et validation"
+        }
+    ]
+}
