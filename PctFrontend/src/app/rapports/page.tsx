@@ -61,7 +61,7 @@ export default function RapportsPage() {
   }
 
   return (
-    <DashboardLayout roles={['admin','secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Rapports & Exports"/>
       <div className="page-content animate-slide">
 

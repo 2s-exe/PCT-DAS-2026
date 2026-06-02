@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
-import { activitesApi, attributionsApi, ressourcesApi } from '@/lib/api'
+import { activitesApi, attributionsApi, ressourcesApi, anneesApi } from '@/lib/api'
 import { StatutBadge, NiveauBadge, Btn, Modal, Card, Empty, Spinner, SeancesSelector, Textarea, Topbar, Sel, Badge } from '@/components/ui'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { computeVhtc, fmtDate } from '@/lib/helpers'
@@ -23,6 +23,7 @@ function ModalDeclarer({ activite, onClose }: { activite?: Activite; onClose: ()
     nb_seances:     Number(activite?.nb_seances||2),
     date_activite:  String(activite?.date_activite||''),
     observations:   String(activite?.observations||''),
+    id_annee:       String(activite?.id_annee||''),
   })
   const set = (k:string,v:unknown) => setForm(f=>({...f,[k]:v}))
 
@@ -34,6 +35,10 @@ function ModalDeclarer({ activite, onClose }: { activite?: Activite; onClose: ()
   const { data: resData } = useQuery({
     queryKey: ['ressources-list'],
     queryFn:  () => ressourcesApi.list().then(r=>r.data.data ?? r.data),
+  })
+  const { data: anneeData } = useQuery({
+    queryKey: ['annees-list'],
+    queryFn:  () => anneesApi.list().then(r=>r.data),
   })
 
   const selectedRes = (resData||[]).find((r:Activite)=>r.id_ressource===parseInt(form.id_ressource)) as Activite|undefined
@@ -50,6 +55,10 @@ function ModalDeclarer({ activite, onClose }: { activite?: Activite; onClose: ()
   const resOptions = (resData||[]).map((r:Activite)=>({
     value: String(r.id_ressource),
     label: `${r.titre_ressource} (N${r.niveau_complexite} · ${r.type_operation})`
+  }))
+  const anneeOptions = (Array.isArray(anneeData) ? anneeData : []).map((a:Activite)=>({
+    value: String(a.id_annee),
+    label: String(a.libelle_annee) + (a.active ? ' ★' : ''),
   }))
 
   const { mutate, isPending } = useMutation({
@@ -72,6 +81,8 @@ function ModalDeclarer({ activite, onClose }: { activite?: Activite; onClose: ()
     <Modal title={isEdit?'Modifier l\'activité':'Déclarer une activité'} onClose={onClose}
       footer={<><Btn variant="ghost" onClick={onClose}>Annuler</Btn><Btn variant="primary" onClick={()=>mutate()} disabled={isPending}>{isPending?<Spinner size={14}/>:'Soumettre'}</Btn></>}>
 
+      <Sel label="Année académique" options={anneeOptions} value={form.id_annee}
+        onChange={e=>set('id_annee',e.target.value)} placeholder="-- Sélectionner l'année --"/>
       <Sel label="Mon attribution (cours assigné)" options={attrOptions} value={form.id_attribution}
         onChange={e=>set('id_attribution',e.target.value)} placeholder="-- Sélectionner --"/>
       <Sel label="Ressource pédagogique travaillée" options={resOptions} value={form.id_ressource}

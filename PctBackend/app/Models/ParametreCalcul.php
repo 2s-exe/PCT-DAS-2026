@@ -17,7 +17,6 @@ class ParametreCalcul extends Model
         'libelle_niveau',
         'heures_par_seance',
         'id_annee',
-        'description',
     ];
 
     protected $casts = [

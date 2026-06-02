@@ -273,7 +273,7 @@ export default function CoursPage() {
   )
 
   return (
-    <DashboardLayout roles={['admin','secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Cours & Séquences"/>
       <div className="page-content animate-slide">
         <div className="actions-bar">

@@ -97,7 +97,7 @@ export default function AttributionsPage() {
   const anneeOptions: { value: string; label: string }[] = (anneesList||[]).map((a:Attribution)=>({value:String(a.id_annee),label:String(a.libelle_annee)}))
 
   return (
-    <DashboardLayout roles={['admin','secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Attributions"/>
       <div className="page-content animate-slide">
 

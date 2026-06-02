@@ -45,11 +45,18 @@ export const authApi = {
     api.post('/login', { login: data.login, password: data.mot_de_passe }),
   me:     () => api.get('/me'),
   logout: () => api.post('/logout'),
+  // Accessible à TOUS les profils — change uniquement son propre mot de passe
+  changerMotDePasse: (data: {
+    mot_de_passe_actuel:  string
+    nouveau_mot_de_passe: string
+    confirmation:         string
+  }) => api.post('/me/changer-mot-de-passe', data),
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
 export const dashboardApi = {
-  global:    () => api.get('/dashboard'),
+  global:   () => api.get('/dashboard'),
+  securite: () => api.get('/dashboard/securite'), // SUPER_ADMIN uniquement
   monEspace: () => api.get('/mon-espace'),
 }
 

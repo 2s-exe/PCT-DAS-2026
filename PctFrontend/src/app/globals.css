@@ -267,6 +267,8 @@ body {
 .stat-card.green::after  { background: linear-gradient(90deg,var(--green),#2DC88A); }
 .stat-card.orange::after { background: linear-gradient(90deg,var(--uvci-orange),#FFAA44); }
 .stat-card.purple::after { background: linear-gradient(90deg,var(--purple),#9B74FF); }
+.stat-card.red::after    { background: linear-gradient(90deg,#E63946,#FF6B6B); }
+.stat-card.gray::after   { background: linear-gradient(90deg,var(--text3),var(--border2)); }
 
 .stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text3); font-weight: 700; margin-bottom: 10px; }
 .stat-value { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 28px; color: var(--text); line-height:1; }

@@ -100,7 +100,7 @@ export default function DepartementsPage() {
   )
 
   return (
-    <DashboardLayout roles={['admin']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique']}>
       <Topbar title="Départements" />
       <div className="page-content animate-slide">
         <div className="actions-bar">

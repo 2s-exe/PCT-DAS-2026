@@ -106,7 +106,7 @@ export default function EnseignantsPage() {
   const deptList = Array.isArray(depts) ? depts : depts?.data || []
 
   return (
-    <DashboardLayout roles={['admin','secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Enseignants" subtitle={`${list.length} enseignant${list.length !== 1 ? 's' : ''} actif${list.length !== 1 ? 's' : ''}`} />
       <div className="page-content animate-slide">
 

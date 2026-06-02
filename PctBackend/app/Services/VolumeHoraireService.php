@@ -30,8 +30,8 @@ class VolumeHoraireService
                                     ->where('id_annee', $idAnnee)
                                     ->sum('charge_horaire');
 
-        // 4. Heures complémentaires = réalisées - prévues (peut être négatif)
-        $heuresComplementaires = max(0, $heuresRealisees - $heuresPrevues);
+        // 4. Heures complémentaires = réalisées - prévues (négatif = déficit)
+        $heuresComplementaires = $heuresRealisees - $heuresPrevues;
 
         // 5. Créer ou mettre à jour le volume
         return VolumeHoraire::updateOrCreate(

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { Plus, Check } from 'lucide-react'
-import { activitesApi, attributionsApi, ressourcesApi } from '@/lib/api'
+import { activitesApi, attributionsApi, ressourcesApi, anneesApi } from '@/lib/api'
 import { StatutBadge, NiveauBadge, Btn, Modal, SearchBar, Card, Empty, Spinner, SeancesSelector, Textarea, Topbar, Sel } from '@/components/ui'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import { computeVhtc, fmtDate, BAREM } from '@/lib/helpers'
@@ -58,11 +58,12 @@ function ModalValider({ activite, onClose }: { activite: Record<string,unknown>;
 // ── Modale création ───────────────────────────────────────────────────────────
 function ModalCreer({ onClose }: { onClose: () => void }) {
   const qc = useQueryClient()
-  const [form, setForm] = useState({ id_ressource:'', id_attribution:'', nb_seances:2, date_activite:'', observations:'' })
+  const [form, setForm] = useState({ id_ressource:'', id_attribution:'', nb_seances:2, date_activite:'', observations:'', id_annee:'' })
   const set = (k: string, v: unknown) => setForm(f => ({ ...f, [k]: v }))
 
   const { data: attrData } = useQuery({ queryKey:['attributions-list'], queryFn: () => attributionsApi.list().then(r => r.data.data ?? r.data) })
   const { data: resData  } = useQuery({ queryKey:['ressources-list'],   queryFn: () => ressourcesApi.list().then(r => r.data.data ?? r.data) })
+  const { data: anneeData } = useQuery({ queryKey:['annees-list'], queryFn: () => anneesApi.list().then(r => r.data) })
 
   const selectedRes = (resData || []).find((r: Record<string,unknown>) => r.id_ressource === parseInt(form.id_ressource))
   const sim = selectedRes ? computeVhtc(String(selectedRes.type_operation), Number(selectedRes.niveau_complexite), form.nb_seances) : null
@@ -81,10 +82,14 @@ function ModalCreer({ onClose }: { onClose: () => void }) {
   const resOptions = (resData || []).map((r: Record<string,unknown>) =>
     ({ value: r.id_ressource as number, label: `${r.titre_ressource} (N${r.niveau_complexite} · ${r.type_operation})` })
   )
+  const anneeOptions = (Array.isArray(anneeData) ? anneeData : []).map((a: Record<string,unknown>) =>
+    ({ value: a.id_annee as number, label: String(a.libelle_annee) + (a.active ? ' ★' : '') })
+  )
 
   return (
     <Modal title="Déclarer une activité" onClose={onClose}
       footer={<><Btn variant="ghost" onClick={onClose}>Annuler</Btn><Btn variant="primary" onClick={() => mutate()} disabled={isPending}>{isPending ? <Spinner size={14}/> : 'Soumettre'}</Btn></>}>
+      <Sel label="Année académique" options={anneeOptions} value={form.id_annee} onChange={e => set('id_annee', e.target.value)} placeholder="-- Sélectionner l'année --" />
       <Sel label="Attribution (Enseignant × Cours)" options={attrOptions} value={form.id_attribution} onChange={e => set('id_attribution', e.target.value)} placeholder="-- Sélectionner --" />
       <Sel label="Ressource pédagogique" options={resOptions} value={form.id_ressource} onChange={e => set('id_ressource', e.target.value)} placeholder="-- Sélectionner --" />
       <SeancesSelector value={form.nb_seances} onChange={v => set('nb_seances', v)} />

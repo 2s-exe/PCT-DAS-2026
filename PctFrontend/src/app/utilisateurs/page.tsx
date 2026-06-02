@@ -136,27 +136,28 @@ export default function UtilisateursPage() {
 
   const list = allUsers.filter(u => !search || String(u.login).toLowerCase().includes(search.toLowerCase()))
 
+  const getProfil = (u: User) => (u.profil as User|undefined)?.libelle_profil as string | undefined
   const stats = {
-    total:  allUsers.length,
-    actifs: allUsers.filter(u => u.actif).length,
-    admin:  allUsers.filter(u => (u.profil as User|undefined)?.libelle_profil === 'admin').length,
-    secr:   allUsers.filter(u => (u.profil as User|undefined)?.libelle_profil === 'secretaire').length,
-    ens:    allUsers.filter(u => (u.profil as User|undefined)?.libelle_profil === 'enseignant').length,
+    total:   allUsers.length,
+    actifs:  allUsers.filter(u => u.actif).length,
+    admins:  allUsers.filter(u => ['super_admin','admin_pedagogique'].includes(getProfil(u) ?? '')).length,
+    secr:    allUsers.filter(u => getProfil(u) === 'secretaire').length,
+    ens:     allUsers.filter(u => getProfil(u) === 'enseignant').length,
   }
 
   return (
-    <DashboardLayout roles={['admin']}>
+    <DashboardLayout roles={['super_admin']}>
       <Topbar title="Gestion des utilisateurs" subtitle="Comptes d'accès à la plateforme PCT" />
       <div className="page-content animate-slide">
 
         {/* Stats */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(5,1fr)', gap:12, marginBottom:24 }}>
           {[
-            ['Total',       stats.total,  'var(--text2)'],
-            ['Actifs',      stats.actifs, 'var(--green)'],
-            ['Admins',      stats.admin,  'var(--uvci-blue)'],
-            ['Secrétaires', stats.secr,   'var(--purple)'],
-            ['Enseignants', stats.ens,    'var(--uvci-orange)'],
+            ['Total',          stats.total,  'var(--text2)'],
+            ['Actifs',         stats.actifs, 'var(--green)'],
+            ['Admins',         stats.admins, 'var(--uvci-blue)'],
+            ['Secrétaires',    stats.secr,   'var(--purple)'],
+            ['Enseignants',    stats.ens,    'var(--uvci-orange)'],
           ].map(([l,v,c]) => (
             <div key={String(l)} style={{ background:'var(--surface)', border:'1px solid var(--border)', borderRadius:12, padding:'16px', textAlign:'center', boxShadow:'var(--shadow-sm)' }}>
               <div style={{ fontFamily:'Plus Jakarta Sans,sans-serif', fontWeight:800, fontSize:24, color:String(c) }}>{String(v)}</div>

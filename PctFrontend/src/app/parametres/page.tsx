@@ -81,7 +81,7 @@ export default function ParametresPage() {
   const paramsList: Param[] = (Array.isArray(params)?params:params?.data||[])
 
   return (
-    <DashboardLayout roles={['admin']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique']}>
       <Topbar title="Paramètres de calcul"/>
       <div className="page-content animate-slide">
 

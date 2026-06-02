@@ -57,7 +57,6 @@ class ParametreCalculController extends Controller
             'libelle_niveau'    => 'required|string|max:150',
             'heures_par_seance' => 'required|numeric|min:0',
             'id_annee'          => 'required|exists:annees_academiques,id_annee',
-            'description'       => 'nullable|string',
         ]);
 
         $existe = ParametreCalcul::where('type_operation', $validated['type_operation'])
@@ -111,7 +110,6 @@ class ParametreCalculController extends Controller
         $validated = $request->validate([
             'heures_par_seance' => 'sometimes|numeric|min:0',
             'libelle_niveau'    => 'sometimes|string|max:150',
-            'description'       => 'nullable|string',
         ]);
 
         $parametre->update($validated);

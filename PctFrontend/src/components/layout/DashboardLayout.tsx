@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/store/authStore'
+import { useAuth, type ProfilType } from '@/store/authStore'
 import Sidebar from './Sidebar'
 import { Spinner } from '@/components/ui'
 
 interface Props {
   children: React.ReactNode
-  roles?: ('admin' | 'secretaire' | 'enseignant')[]
+  roles?: ProfilType[]
+}
+
+const ROLE_HOME: Record<ProfilType, string> = {
+  super_admin:       '/dashboard',
+  admin_pedagogique: '/dashboard',
+  secretaire:        '/dashboard',
+  enseignant:        '/mon-espace',
 }
 
 export default function DashboardLayout({ children, roles }: Props) {
@@ -19,20 +26,18 @@ export default function DashboardLayout({ children, roles }: Props) {
   useEffect(() => {
     setMounted(true)
     if (!user) { router.push('/login'); return }
-    if (roles && !roles.includes(user.profil as 'admin' | 'secretaire' | 'enseignant')) {
-      // Rediriger vers la page d'accueil du rôle
-      router.push(user.profil === 'enseignant' ? '/mon-espace' : '/dashboard')
+    if (roles && !roles.includes(user.profil)) {
+      router.push(ROLE_HOME[user.profil] ?? '/login')
     }
   }, [user, roles, router])
 
-  // Render spinner during hydration/auth check
   if (!mounted || !user) return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+    <div style={{ width:'100vw', height:'100vh', display:'flex', alignItems:'center', justifyContent:'center', background:'var(--bg)' }}>
       <Spinner size={32} />
     </div>
   )
 
-  if (roles && !roles.includes(user.profil as 'admin' | 'secretaire' | 'enseignant')) return null
+  if (roles && !roles.includes(user.profil)) return null
 
   return (
     <div className="app-layout">

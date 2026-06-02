@@ -20,8 +20,21 @@ export function NiveauBadge({ niveau }: { niveau: number }) {
 }
 
 export function RoleBadge({ role }: { role: string }) {
-  const colors: Record<string, string> = { admin: 'blue', secretaire: 'purple', enseignant: 'green' }
-  return <Badge color={colors[role] || 'gray'}>{role}</Badge>
+  const colors: Record<string, string> = {
+    super_admin:       'red',
+    admin_pedagogique: 'orange',
+    admin:             'blue',
+    secretaire:        'purple',
+    enseignant:        'green',
+  }
+  const labels: Record<string, string> = {
+    super_admin:       'Super Admin',
+    admin_pedagogique: 'Admin. Péda.',
+    admin:             'Administrateur',
+    secretaire:        'Secrétaire',
+    enseignant:        'Enseignant',
+  }
+  return <Badge color={colors[role] || 'gray'}>{labels[role] || role}</Badge>
 }
 
 // ── Buttons ───────────────────────────────────────────────────────────────────

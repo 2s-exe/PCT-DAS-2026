@@ -133,7 +133,7 @@ export default function RessourcesPage() {
   )
 
   return (
-    <DashboardLayout roles={['admin', 'secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Ressources pédagogiques" />
       <div className="page-content animate-slide">
         <div className="actions-bar">

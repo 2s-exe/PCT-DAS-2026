@@ -32,7 +32,7 @@ export default function VolumesPage() {
   const taux      = pct(totalReal, totalPrev)
 
   return (
-    <DashboardLayout roles={['admin','secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Volumes horaires"/>
       <div className="page-content animate-slide">
 

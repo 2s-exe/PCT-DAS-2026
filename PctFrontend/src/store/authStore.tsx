@@ -3,21 +3,28 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
 import { authApi } from '@/lib/api'
 
+export type ProfilType = 'super_admin' | 'admin_pedagogique' | 'secretaire' | 'enseignant'
+
 export interface AuthUser {
-  login: string
-  profil: 'admin' | 'secretaire' | 'enseignant'
+  id:        number
+  login:     string
+  profil:    ProfilType
+  mot_de_passe_change_requis?: boolean
   enseignant?: { id_enseignant: number; nom: string; prenom: string; statut: string }
 }
 
 interface AuthContextType {
-  user: AuthUser | null
-  token: string | null
-  login: (credentials: { login: string; mot_de_passe: string }) => Promise<AuthUser>
-  logout: () => Promise<void>
-  isAdmin: boolean
-  isSecretaire: boolean
-  isEnseignant: boolean
-  canManage: boolean
+  user:             AuthUser | null
+  token:            string | null
+  login:            (credentials: { login: string; mot_de_passe: string }) => Promise<AuthUser>
+  logout:           () => Promise<void>
+  isSuperAdmin:     boolean
+  isAdminPedago:    boolean
+  isAdmin:          boolean  // super_admin OU admin_pedagogique (rétro-compat)
+  isSecretaire:     boolean
+  isEnseignant:     boolean
+  canManage:        boolean  // peut valider des activités
+  canManageUsers:   boolean  // SUPER_ADMIN exclusif
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -44,21 +51,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (credentials: { login: string; mot_de_passe: string }) => {
     const res = await authApi.login(credentials)
-    // Backend retourne { token, user: { id, login, role, enseignant } }
+    // Backend retourne { token, user: { id, login, role, mot_de_passe_change_requis, enseignant } }
     const { token: t, user } = res.data
 
-    // On normalise : le backend appelle le rôle "role", le frontend attend "profil"
     const authUser: AuthUser = {
-      login:       user.login,
-      profil:      user.role as AuthUser['profil'],
-      enseignant:  user.enseignant ?? undefined,
+      id:                          user.id,
+      login:                       user.login,
+      profil:                      user.role as ProfilType,
+      mot_de_passe_change_requis:  user.mot_de_passe_change_requis ?? false,
+      enseignant:                  user.enseignant ?? undefined,
     }
 
-    // localStorage (pour Axios)
     localStorage.setItem('pct_token', t)
     localStorage.setItem('pct_user', JSON.stringify(authUser))
-
-    // Cookies (pour le middleware Next.js)
     setCookie('pct_token', t)
     setCookie('pct_user', JSON.stringify(authUser))
 
@@ -79,13 +84,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
+  const isSuperAdmin  = user?.profil === 'super_admin'
+  const isAdminPedago = user?.profil === 'admin_pedagogique'
+  const isSecretaire  = user?.profil === 'secretaire'
+  const isEnseignant  = user?.profil === 'enseignant'
+
   return (
     <AuthContext.Provider value={{
       user, token, login, logout,
-      isAdmin:      user?.profil === 'admin',
-      isSecretaire: user?.profil === 'secretaire',
-      isEnseignant: user?.profil === 'enseignant',
-      canManage:    user?.profil === 'admin' || user?.profil === 'secretaire',
+      isSuperAdmin,
+      isAdminPedago,
+      isAdmin:          isSuperAdmin || isAdminPedago,
+      isSecretaire,
+      isEnseignant,
+      canManage:        isSuperAdmin || isAdminPedago || isSecretaire,
+      canManageUsers:   isSuperAdmin,
     }}>
       {children}
     </AuthContext.Provider>

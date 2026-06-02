@@ -8,6 +8,9 @@ use App\Models\AnneeAcademique;
 use App\Models\Attribution;
 use App\Models\Departement;
 use App\Models\Enseignant;
+use App\Models\JournalAction;
+use App\Models\Profil;
+use App\Models\User;
 use App\Models\VolumeHoraire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +84,91 @@ class DashboardController extends Controller
             'activites_en_attente'    => $activitesEnAttente,
             'annee_active'            => $annee->libelle_annee,
             'par_departement'         => $parDepartement,
+        ]);
+    }
+
+    /**
+     * Tableau de bord Sécurité SI — SUPER_ADMIN exclusivement.
+     * Retourne les indicateurs de gestion des comptes et du journal d'audit.
+     */
+    public function securite()
+    {
+        // Compteurs de comptes
+        $totalComptes  = User::count();
+        $actifs        = User::where('actif', true)->count();
+        $inactifs      = User::where('actif', false)->count();
+        $verrouilles   = User::whereNotNull('compte_verrouille_jusqu_a')
+                             ->where('compte_verrouille_jusqu_a', '>', now())
+                             ->count();
+
+        // Répartition par rôle (via profil)
+        $parRole = Profil::withCount('utilisateurs')->get()
+            ->map(fn($p) => [
+                'profil' => $p->libelle_profil,
+                'total'  => $p->utilisateurs_count,
+                'actifs' => User::where('id_profil', $p->id_profil)->where('actif', true)->count(),
+            ])
+            ->keyBy('profil');
+
+        // Tentatives échouées sur les dernières 24h
+        $echecsAujourdhui = JournalAction::where('action', 'login_echec')
+            ->where('created_at', '>=', now()->subHours(24))
+            ->count();
+
+        // Verrouillages automatiques sur les dernières 24h
+        $verrouillagesAujourdhui = JournalAction::where('action', 'verrouillage_auto')
+            ->where('created_at', '>=', now()->subHours(24))
+            ->count();
+
+        // 5 dernières connexions réussies
+        $dernieresConnexions = JournalAction::where('action', 'login_succes')
+            ->with('user:id_user,login,id_profil')
+            ->latest('created_at')
+            ->limit(5)
+            ->get()
+            ->map(fn($j) => [
+                'login'      => $j->user?->login ?? '—',
+                'adresse_ip' => $j->adresse_ip,
+                'date'       => $j->created_at,
+            ]);
+
+        // 5 dernières actions dans le journal
+        $dernieresActions = JournalAction::with('user:id_user,login')
+            ->whereIn('action', ['creation_compte','modification_compte','desactivation_compte','reinitialisation_mdp','verrouillage_auto','verrouillage_manuel'])
+            ->latest('created_at')
+            ->limit(5)
+            ->get()
+            ->map(fn($j) => [
+                'action'      => $j->action,
+                'description' => $j->description,
+                'login'       => $j->user?->login ?? 'Système',
+                'statut'      => $j->statut,
+                'date'        => $j->created_at,
+            ]);
+
+        // Comptes actuellement verrouillés
+        $comptesVerrouilles = User::whereNotNull('compte_verrouille_jusqu_a')
+            ->where('compte_verrouille_jusqu_a', '>', now())
+            ->with('profil:id_profil,libelle_profil')
+            ->get()
+            ->map(fn($u) => [
+                'id_user'    => $u->id_user,
+                'login'      => $u->login,
+                'profil'     => $u->profil?->libelle_profil,
+                'verrouille_jusqu_a' => $u->compte_verrouille_jusqu_a,
+            ]);
+
+        return response()->json([
+            'total_comptes'            => $totalComptes,
+            'actifs'                   => $actifs,
+            'inactifs'                 => $inactifs,
+            'verrouilles'              => $verrouilles,
+            'par_role'                 => $parRole,
+            'echecs_connexion_24h'     => $echecsAujourdhui,
+            'verrouillages_24h'        => $verrouillagesAujourdhui,
+            'dernieres_connexions'     => $dernieresConnexions,
+            'dernieres_actions'        => $dernieresActions,
+            'comptes_verrouilles'      => $comptesVerrouilles,
         ]);
     }
 

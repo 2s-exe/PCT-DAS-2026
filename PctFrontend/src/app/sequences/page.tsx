@@ -101,7 +101,7 @@ export default function SequencesPage() {
   }, {})
 
   return (
-    <DashboardLayout roles={['admin', 'secretaire']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique','secretaire']}>
       <Topbar title="Séquences pédagogiques" />
       <div className="page-content animate-slide">
 

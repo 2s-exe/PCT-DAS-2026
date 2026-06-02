@@ -3,23 +3,59 @@ import type { NextRequest } from 'next/server'
 
 const PUBLIC = ['/login']
 
+// Routes accessibles par profil — principe du moindre privilège
 const ROLE_ALLOWED: Record<string, string[]> = {
-  admin: [
-    '/dashboard','/activites','/enseignants','/cours','/sequences','/ressources',
-    '/attributions','/volumes','/rapports','/parametres','/utilisateurs',
-    '/departements','/annees',
+  // SUPER_ADMIN : gestion SI + supervision lecture seule du pédagogique
+  super_admin: [
+    '/dashboard',
+    '/utilisateurs',  // exclusif super_admin
+    '/departements',
+    '/annees',
+    '/parametres',
+    '/rapports',
+    // Lecture seule sur les entités pédagogiques (supervision)
+    '/enseignants', '/cours', '/attributions', '/sequences',
+    '/ressources', '/activites', '/volumes',
   ],
+
+  // ADMIN_PEDAGOGIQUE : gestion académique complète, pas de gestion des comptes
+  admin_pedagogique: [
+    '/dashboard',
+    '/enseignants',
+    '/cours',
+    '/sequences',
+    '/ressources',
+    '/attributions',
+    '/activites',
+    '/volumes',
+    '/rapports',
+    '/departements',
+    '/annees',
+    '/parametres',
+  ],
+
+  // SECRETAIRE : saisie + consultation, pas d'administration
   secretaire: [
-    '/dashboard','/activites','/enseignants','/cours','/sequences','/ressources',
-    '/attributions','/volumes','/rapports',
+    '/dashboard',
+    '/activites',
+    '/enseignants',
+    '/cours',
+    '/sequences',
+    '/ressources',
+    '/attributions',
+    '/volumes',
+    '/rapports',
   ],
-  enseignant: ['/mon-espace','/mes-activites','/simuler'],
+
+  // ENSEIGNANT : espace personnel uniquement
+  enseignant: ['/mon-espace', '/mes-activites', '/simuler'],
 }
 
 const ROLE_HOME: Record<string, string> = {
-  admin:      '/dashboard',
-  secretaire: '/dashboard',
-  enseignant: '/mon-espace',
+  super_admin:       '/dashboard',
+  admin_pedagogique: '/dashboard',
+  secretaire:        '/dashboard',
+  enseignant:        '/mon-espace',
 }
 
 export function middleware(request: NextRequest) {
@@ -29,7 +65,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  const token     = request.cookies.get('pct_token')?.value
+  const token      = request.cookies.get('pct_token')?.value
   const userCookie = request.cookies.get('pct_user')?.value
 
   if (!token || !userCookie) {
@@ -45,8 +81,10 @@ export function middleware(request: NextRequest) {
 
   if (!profil) return NextResponse.redirect(new URL('/login', request.url))
 
-  const allowed = ROLE_ALLOWED[profil] || []
-  const hasAccess = allowed.some(route => pathname === route || pathname.startsWith(route + '/'))
+  const allowed   = ROLE_ALLOWED[profil] || []
+  const hasAccess = allowed.some(
+    route => pathname === route || pathname.startsWith(route + '/')
+  )
 
   if (!hasAccess) {
     return NextResponse.redirect(new URL(ROLE_HOME[profil] || '/login', request.url))

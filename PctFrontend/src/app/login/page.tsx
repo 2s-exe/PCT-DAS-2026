@@ -8,9 +8,10 @@ import { Spinner } from '@/components/ui'
 import { GraduationCap, BookOpen, Users, BarChart3, Eye, EyeOff } from 'lucide-react'
 
 const DEMO = [
-  { login: 'admin@uvci.edu.ci',      password: 'secret123',      role: 'Administrateur',          color: '#0056A6' },
-  { login: 'secretaire@uvci.edu.ci', password: 'secret123', role: 'Secrétaire pédagogique',  color: '#6B4ECC' },
-  { login: 'j.kouakou@uvci.ci',      password: 'secret123', role: 'Enseignant — Kouassi J.', color: '#1D9E6F' },
+  { login: 'superadmin@uvci.edu.ci',   password: 'Secret@2026', role: 'Super Administrateur',    color: '#E63946' },
+  { login: 'admin.pedago@uvci.edu.ci', password: 'Secret@2026', role: 'Admin. Pédagogique',       color: '#F28C28' },
+  { login: 'secretaire@uvci.edu.ci',   password: 'Secret@2026', role: 'Secrétaire pédagogique',  color: '#6B4ECC' },
+  { login: 'said.sow@uvci.edu.ci',     password: 'Secret@2026', role: 'Enseignant',               color: '#1D9E6F' },
 ]
 
 const FEATURES = [
@@ -35,7 +36,13 @@ export default function LoginPage() {
     try {
       const user = await login(form)
       toast.success('Connexion réussie !')
-      router.push(user.profil === 'enseignant' ? '/mon-espace' : '/dashboard')
+      const home: Record<string, string> = {
+        super_admin:       '/dashboard',
+        admin_pedagogique: '/dashboard',
+        secretaire:        '/dashboard',
+        enseignant:        '/mon-espace',
+      }
+      router.push(home[user.profil] ?? '/dashboard')
     } catch {
       setError('Identifiants incorrects. Vérifiez votre login et mot de passe.')
     } finally { setLoading(false) }

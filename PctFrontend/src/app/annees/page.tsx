@@ -95,7 +95,7 @@ export default function AnneesPage() {
   const list: Annee[] = data || []
 
   return (
-    <DashboardLayout roles={['admin']}>
+    <DashboardLayout roles={['super_admin','admin_pedagogique']}>
       <Topbar title="Années académiques" />
       <div className="page-content animate-slide">
         <div className="actions-bar">
