@@ -7,7 +7,8 @@ RUN composer install \
     --no-interaction \
     --no-scripts \
     --prefer-dist \
-    --optimize-autoloader
+    --optimize-autoloader \
+    --ignore-platform-reqs
 
 # ── Stage 2: Production image ─────────────────────────────────────────────────
 FROM php:8.4-fpm-alpine
@@ -35,7 +36,6 @@ RUN mkdir -p /var/www/bootstrap/cache /var/www/storage/logs \
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# ✅ CHANGEMENT ICI : port 8000 HTTP au lieu de 9000 FPM
 EXPOSE 8000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
